@@ -11,17 +11,18 @@
             --neon-green: #4effa1;
             --neon-purple: #b53cff;
             --bg-dark: #070a0f;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(78, 255, 161, 0.3);
+            --panel-bg: rgba(7, 10, 15, 0.95); /* Очень темная, почти непрозрачная подложка, как на рефе */
+            --glass-border: rgba(78, 255, 161, 0.5);
         }
 
         body {
             margin: 0;
             padding: 0;
-            /* Основной темный цвет фона *cite: */
+            /* Требование 1 и 2: Темная подложка, ковер затемнить (как на image_2.png) *cite: */
             background-color: var(--bg-dark);
-            /* Фон ковра (без изменений в ссылке) *cite: */
-            background-image: url('https://raw.githubusercontent.com/NikaShum93/web/main/bg.jpg');
+            background-image:
+                linear-gradient(rgba(7, 10, 15, 0.92), rgba(7, 10, 15, 0.92)), /* Сильное затемнение *cite: */
+                url('https://raw.githubusercontent.com/NikaShum93/web/main/bg.jpg'); /* Ковер на фоне *cite: */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -30,70 +31,40 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Убираем скролл полностью *cite: */
+            overflow: hidden; /* Скролл убрать справа полностью *cite: */
             position: relative;
         }
 
-        /* Требование 1 и 2: Темная подложка, затемняющая ковер */
+        /* --- Требование 3: Настоящий киберпанк-глитч с искажением и помехами --- */
+        /* Слой статического шума/помех *cite: */
         body::before {
             content: "";
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            /* Используем существующий темный цвет для сильного затемнения ковра *cite: */
-            background-color: var(--bg-dark);
-            opacity: 0.9; /* Сильно затемняем ковер */
-            z-index: -2; /* Уходим за контент */
-        }
-
-        /* Требование 3: Эффект матрицы-глитча с искажением */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: -1; /* Поверх затемненного ковра, но под контентом */
+            top: -100px; left: -100px; right: -100px; bottom: -100px;
+            z-index: -1;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4uKfAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAARElEQVQ4y2NgwAJ8vAwwYAYZ2wB0vG958wAY5+NlgAEzyNjGBw45558HwjgfLwMsYAYZ23gQYMBw8QYBBgwXbyBgwAA3HwK5x1h+LAAAAABJRU5ErkJggg==');
+            background-repeat: repeat;
+            opacity: 0.03; /* Едва заметный цифровой шум *cite: */
             pointer-events: none;
-
-            /* Создаем текстуру цифровых линий матрицы */
-            background-image:
-                repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.08), rgba(0, 255, 0, 0.08) 1px, transparent 1px, transparent 2px), /* Гориз линии */
-                repeating-linear-gradient(90deg, rgba(0, 255, 0, 0.04), rgba(0, 255, 0, 0.04) 1px, transparent 1px, transparent 2px); /* Вертикальные */
-            background-size: 100% 4px, 4px 100%;
-
-            /* Анимация глитч-эффекта и искажений */
-            animation: glitchEffect 0.2s steps(2, end) infinite, matrixBlink 5s linear infinite;
-            mix-blend-mode: color-dodge; /* Делает зеленые элементы более неоновыми */
+            animation: staticNoise 0.1s infinite;
         }
 
-        /* Анимация искажения глитча (skew) */
-        @keyframes glitchEffect {
-            0%, 100% {
-                transform: skewX(0deg) scaleY(1);
-                filter: contrast(110%) brightness(100%);
-            }
-            20% {
-                transform: skewX(2deg) scaleY(1.02);
-                background-position: 5px 0;
-                filter: contrast(130%) brightness(110%);
-            }
-            40% {
-                transform: skewX(-1.5deg) scaleY(0.98);
-                background-position: -5px 0;
-            }
-            60% {
-                background-position: 0 5px;
-                filter: contrast(110%) brightness(120%);
-            }
-            80% {
-                transform: skewX(1.1deg);
-                background-position: 0 -5px;
-                filter: contrast(100%) brightness(100%);
-            }
+        /* Анимация искажения (rapid RGB split and displacement) */
+        @keyframes glitchEffekt {
+            0% { clip-path: inset(80% 0 10% 0); transform: translate(-5px, 0px); }
+            5% { clip-path: inset(10% 0 70% 0); transform: translate(5px, -5px); }
+            10% { clip-path: inset(50% 0 10% 0); transform: translate(-3px, 2px); }
+            15% { clip-path: inset(0% 0 100% 0); transform: translate(0px, 0px); }
+            /* Эффект мерцания помех *cite: */
+            20% { clip-path: inset(50% 0 10% 0); transform: translate(2px, -3px); opacity: 0.5; }
+            21% { clip-path: inset(50% 0 10% 0); transform: translate(2px, -3px); opacity: 1; }
+            /* ... больше случайных clip-path для хаотичного глитча ... */
+            100% { clip-path: inset(80% 0 10% 0); transform: translate(-5px, 0px); }
         }
 
-        /* Дополнительное медленное мерцание матрицы */
-        @keyframes matrixBlink {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 0.8; }
+        @keyframes staticNoise {
+            0% { transform: translate(0,0); }
+            100% { transform: translate(10px,10px); }
         }
 
         .container {
@@ -102,93 +73,157 @@
             padding: 20px;
             width: 100%;
             box-sizing: border-box;
-            position: relative; /* Чтобы контент был поверх псевдоэлементов body */
+            position: relative;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow-y: auto; /* Контент скроллится ВНУТРИ контейнера, край страницы чист *cite: */
         }
 
-        /* --- Шапка --- */
+        /* --- Шапка *cite: --- */
         header {
             display: flex;
             align-items: center;
+            justify-content: space-between; /* Лого слева, глитч-эффекты справа */
             padding: 20px 0;
+            position: relative;
         }
         .logo {
             display: flex;
             align-items: center;
             gap: 15px;
+            text-decoration: none;
+            color: white;
         }
+        /* УБРАЛИ ДРОЖЬ, ДОБАВИЛИ ГЛИТЧ НА ЛОГО */
         .logo img {
             height: 40px;
+            position: relative;
+            animation: glitchEffekt 4s infinite linear alternate-reverse; /* Случайные вспышки глитча *cite: */
         }
+        /* Исправление шрифтов в шапке *cite: */
         .logo-text h2 {
             margin: 0;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Montserrat', sans-serif; /* Montserrat для заголовков *cite: */
             font-size: 1.2rem;
             text-transform: uppercase;
+            font-weight: 700;
         }
         .logo-text p {
             margin: 0;
             font-size: 0.8rem;
             color: #aaa;
+            font-family: 'Roboto', sans-serif;
         }
 
         /* --- Главный экран *cite: --- */
+        /* Отделяем основной блок инфы четкой подложкой, как на image_2.png */
+        .main-content-panel {
+            background: var(--panel-bg); /* Темная подложка *cite: */
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(78, 255, 161, 0.1); /* Свечение */
+            margin: 40px 0;
+            position: relative;
+        }
+
+        /* Хаотичные помехи-линии поверх панели */
+        .main-content-panel::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: repeating-linear-gradient(0deg, rgba(78, 255, 161, 0.05), rgba(78, 255, 161, 0.05) 1px, transparent 1px, transparent 15px);
+            background-size: 100% 150px;
+            opacity: 0.2;
+            pointer-events: none;
+            animation: matrixLines 1s linear infinite;
+        }
+
+        @keyframes matrixLines {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 -150px; }
+        }
+
         .hero {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 40px 0;
             gap: 40px;
+            position: relative;
+            z-index: 2; /* Поверх помех панели */
         }
         .hero-content {
             flex: 1;
         }
+        /* Глитч-эффект на основном заголовке *cite: */
         .hero-title {
             font-family: 'Montserrat', sans-serif;
             font-size: 3.5rem;
             font-weight: 900;
             line-height: 1.1;
-            margin-bottom: 20px;
+            margin: 0 0 20px 0;
             text-transform: uppercase;
             color: #fff;
             text-shadow: 0 0 10px var(--neon-green), 0 0 20px rgba(78, 255, 161, 0.5);
+            position: relative;
+            display: inline-block;
+        }
+        /* Слой глитч-копии для искажения */
+        .hero-title::before, .hero-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0.8;
+            pointer-events: none;
         }
         .hero-title span {
             color: var(--neon-purple);
             text-shadow: 0 0 10px var(--neon-purple), 0 0 20px rgba(181, 60, 255, 0.5);
         }
+        /* Исправление выравнивания subtext *cite: */
         .hero-desc {
+            font-family: 'Roboto', sans-serif;
             font-size: 1.2rem;
             line-height: 1.5;
             margin-bottom: 40px;
             color: #ccc;
+            text-align: left; /* Четкое левое выравнивание *cite: */
         }
         .main-btn {
-            background: rgba(78, 255, 161, 0.1);
+            background: rgba(78, 255, 161, 0.05);
             border: 2px solid var(--neon-green);
             color: #fff;
             padding: 15px 40px;
             font-size: 1.2rem;
-            font-weight: bold;
-            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif; /* Montserrat для кнопок *cite: */
             border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(78, 255, 161, 0.4), inset 0 0 15px rgba(78, 255, 161, 0.2);
+            box-shadow: 0 0 15px rgba(78, 255, 161, 0.4), inset 0 0 15px rgba(78, 255, 161, 0.1);
             transition: all 0.3s ease;
             text-transform: uppercase;
+            text-shadow: 0 0 5px white;
+            position: relative;
         }
         .main-btn:hover {
             background: var(--neon-green);
             color: #000;
             box-shadow: 0 0 30px var(--neon-green);
+            text-shadow: none;
         }
         .hero-image {
             flex: 1;
             text-align: right;
+            position: relative;
         }
         .hero-image img {
             max-width: 100%;
             border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 0 30px rgba(78, 255, 161, 0.2);
         }
 
         /* --- Модули --- */
@@ -197,37 +232,38 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 60px;
+            position: relative;
+            z-index: 2; /* Поверх помех панели */
         }
         .module-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.01); /* Очень тонкое стекло для карточек внутри */
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 20px;
             position: relative;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .module-card:hover {
             transform: translateY(-5px);
-            border-color: var(--neon-green);
-            box-shadow: 0 0 20px rgba(78, 255, 161, 0.2);
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 20px rgba(181, 60, 255, 0.2);
         }
         .module-subtitle {
+            font-family: 'Roboto', sans-serif;
             font-size: 0.7rem;
             text-transform: uppercase;
-            color: #888;
+            color: #aaa;
             margin-bottom: 5px;
         }
         .module-title {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Montserrat', sans-serif; /* Montserrat для заголовков модулей *cite: */
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 700;
             margin: 0 0 10px 0;
             text-transform: uppercase;
         }
         .module-desc {
+            font-family: 'Roboto', sans-serif;
             font-size: 0.8rem;
             color: #bbb;
             margin-bottom: 20px;
@@ -235,17 +271,19 @@
         }
         .module-btn {
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ccc;
             padding: 8px 15px;
             border-radius: 20px;
             font-size: 0.7rem;
             cursor: pointer;
-            transition: border-color 0.3s;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
         }
         .module-card:hover .module-btn {
-            border-color: var(--neon-green);
-            color: var(--neon-green);
+            border-color: var(--neon-purple);
+            color: #fff;
+            background: rgba(181, 60, 255, 0.1);
         }
         .module-icon {
             position: absolute;
@@ -255,6 +293,7 @@
             height: 60px;
             border-radius: 10px;
             object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         /* --- Подвал *cite: --- */
@@ -262,6 +301,8 @@
             margin-top: auto;
             padding: 30px 0;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1; /* Обычный слой */
         }
         .footer-content {
             display: flex;
@@ -271,24 +312,27 @@
             gap: 20px;
         }
         .nav-links a {
-            color: #ccc;
+            color: #aaa;
             text-decoration: none;
             margin-right: 20px;
             font-size: 0.9rem;
             text-transform: uppercase;
+            font-family: 'Montserrat', sans-serif;
             transition: color 0.3s;
         }
         .nav-links a:hover {
             color: var(--neon-green);
         }
         .timer {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: bold;
+            font-family: 'Montserrat', sans-serif; /* Montserrat для таймера *cite: */
+            font-weight: 700;
+            color: #fff;
         }
         .timer span {
-            color: #fff;
+            color: var(--neon-green);
             font-size: 1.2rem;
             margin-left: 10px;
+            font-weight: 900;
         }
         .socials {
             display: flex;
@@ -299,20 +343,24 @@
             height: 35px;
             border-radius: 50%;
             cursor: pointer;
-            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
         }
         .socials img:hover {
             transform: scale(1.1);
             box-shadow: 0 0 15px var(--neon-purple);
+            border-color: var(--neon-purple);
         }
 
-        /* Адаптивность для экранов поменьше *cite: */
+        /* Адаптивность *cite: */
         @media (max-width: 992px) {
-            .hero { flex-direction: column; }
+            .hero { flex-direction: column; text-align: center; }
+            .hero-content { text-align: center; }
+            .hero-desc { text-align: center; }
             .hero-image { text-align: center; }
             .modules { grid-template-columns: repeat(2, 1fr); }
             .footer-content { flex-direction: column; text-align: center; }
-            .nav-links { margin-bottom: 15px; }
+            .nav-links { margin-bottom: 15px; display: flex; flex-wrap: wrap; justify-content: center; }
         }
         @media (max-width: 600px) {
             .modules { grid-template-columns: 1fr; }
@@ -324,61 +372,63 @@
 
 <div class="container">
     <header>
-        <div class="logo">
+        <a href="#" class="logo">
             <img src="https://raw.githubusercontent.com/nikashum93/web/main/logo.png" alt="Логотип">
             <div class="logo-text">
                 <h2>УРОК-Блокбастер</h2>
-                <p>Режиссура образовательных квестов *cite:</p>
+                <p>Режиссура образовательных квестов</p>
             </div>
         </div>
     </header>
 
-    <main>
-        <div class="hero">
-            <div class="hero-content">
-                <h1 class="hero-title">ПРЕВРАТИ УРОК<br>В <span>БЛОКБАСТЕР *cite:</span></h1>
-                <p class="hero-desc">Создавай образовательные квесты, 18 игровых механик, авторские расширения и AI-интерактив для любого предмета. *cite:</p>
-                <button class="main-btn">Войти в студию *cite:</button>
-            </div>
-            <div class="hero-image">
-                <img src="https://raw.githubusercontent.com/nikashum93/web/main/hero-img.png" alt="Схема платформы">
-            </div>
-        </div>
-
-        <div class="modules">
-            <div class="module-card">
-                <div class="module-subtitle">Модуль 1 *cite:</div>
-                <h3 class="module-title">Сценарий<br>игры *cite:</h3>
-                <p class="module-desc">18 игровых механик:<br>от головоломок до<br>расследований *cite:</p>
-                <button class="module-btn">Подробнее о модуле *cite:</button>
-                <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod1.png" class="module-icon" alt="Сценарий">
+    <div class="main-content-panel">
+        <main>
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">ПРЕВРАТИ УРОК<br>В <span>БЛОКБАСТЕР</span></h1>
+                    <p class="hero-desc">Создавай образовательные квесты, 18 игровых механик, авторские расширения и AI-интерактив для любого предмета.</p>
+                    <button class="main-btn">Войти в студию</button>
+                </div>
+                <div class="hero-image">
+                    <img src="https://raw.githubusercontent.com/nikashum93/web/main/hero-img.png" alt="Схема платформы">
+                </div>
             </div>
 
-            <div class="module-card">
-                <div class="module-subtitle">Модуль 2 *cite:</div>
-                <h3 class="module-title">Режиссура<br>и визуал *cite:</h3>
-                <p class="module-desc">Создание атмосферы<br>и визуальных<br>эффектов *cite:</p>
-                <button class="module-btn">Подробнее о модуле *cite:</button>
-                <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod2.png" class="module-icon" alt="Визуал">
-            </div>
+            <div class="modules">
+                <div class="module-card">
+                    <div class="module-subtitle">Модуль 1</div>
+                    <h3 class="module-title">Сценарий<br>игры</h3>
+                    <p class="module-desc">18 игровых механик:<br>от головоломок до<br>расследований</p>
+                    <button class="module-btn">Подробнее о модуле</button>
+                    <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod1.png" class="module-icon" alt="Сценарий">
+                </div>
 
-            <div class="module-card">
-                <div class="module-subtitle">Модуль 3 *cite:</div>
-                <h3 class="module-title">AI-<br>интерактив *cite:</h3>
-                <p class="module-desc">Интеграция нейросетей<br>в обучение *cite:</p>
-                <button class="module-btn">Подробнее о модуле *cite:</button>
-                <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod3.png" class="module-icon" alt="Нейросети">
-            </div>
+                <div class="module-card">
+                    <div class="module-subtitle">Модуль 2</div>
+                    <h3 class="module-title">Режиссура<br>и визуал</h3>
+                    <p class="module-desc">Создание атмосферы<br>и визуальных<br>эффектов</p>
+                    <button class="module-btn">Подробнее о модуле</button>
+                    <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod2.png" class="module-icon" alt="Визуал">
+                </div>
 
-            <div class="module-card">
-                <div class="module-subtitle">Модуль 4 *cite:</div>
-                <h3 class="module-title">Игровая<br>платформа *cite:</h3>
-                <p class="module-desc">Авторские расширения<br>для любой среды *cite:</p>
-                <button class="module-btn">Подробнее о модуле *cite:</button>
-                <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod4.png" class="module-icon" alt="Платформа">
+                <div class="module-card">
+                    <div class="module-subtitle">Модуль 3</div>
+                    <h3 class="module-title">AI-<br>интерактив</h3>
+                    <p class="module-desc">Интеграция нейросетей<br>в обучение</p>
+                    <button class="module-btn">Подробнее о модуле</button>
+                    <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod3.png" class="module-icon" alt="Нейросети">
+                </div>
+
+                <div class="module-card">
+                    <div class="module-subtitle">Модуль 4</div>
+                    <h3 class="module-title">Игровая<br>платформа</h3>
+                    <p class="module-desc">Авторские расширения<br>для любой среды</p>
+                    <button class="module-btn">Подробнее о модуле</button>
+                    <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod4.png" class="module-icon" alt="Платформа">
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <footer>
         <div class="footer-content">
@@ -392,7 +442,7 @@
             </div>
             
             <div class="timer">
-                СТАРТ КУРСА ЧЕРЕЗ: <span>04 ДНЯ : 18 ЧАСОВ : 32 МИНУТЫ *cite:</span>
+                СТАРТ КУРСА ЧЕРЕЗ: <span>04 ДНЯ : 18 ЧАСОВ : 32 МИНУТЫ</span>
             </div>
 
             <div class="socials">
