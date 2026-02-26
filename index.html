@@ -11,18 +11,26 @@
             --neon-green: #4effa1;
             --neon-purple: #b53cff;
             --bg-dark: #070a0f;
-            --panel-bg: rgba(7, 10, 15, 0.95); /* Очень темная, почти непрозрачная подложка, как на рефе */
+            --panel-bg: rgba(7, 10, 15, 0.95);
             --glass-border: rgba(78, 255, 161, 0.5);
+        }
+
+        /* Хитро прячем сам ползунок скролла справа, но оставляем возможность крутить страницу */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        html {
+            scrollbar-width: none; /* Для Firefox */
         }
 
         body {
             margin: 0;
             padding: 0;
-            /* Требование 1 и 2: Темная подложка, ковер затемнить (как на image_2.png) *cite: */
             background-color: var(--bg-dark);
             background-image:
-                linear-gradient(rgba(7, 10, 15, 0.92), rgba(7, 10, 15, 0.92)), /* Сильное затемнение *cite: */
-                url('https://raw.githubusercontent.com/NikaShum93/web/main/bg.jpg'); /* Ковер на фоне *cite: */
+                linear-gradient(rgba(7, 10, 15, 0.92), rgba(7, 10, 15, 0.92)),
+                url('https://raw.githubusercontent.com/NikaShum93/web/main/bg.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -31,12 +39,10 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Скролл убрать справа полностью *cite: */
+            overflow-x: hidden; /* Запрещаем только горизонтальный скролл */
             position: relative;
         }
 
-        /* --- Требование 3: Настоящий киберпанк-глитч с искажением и помехами --- */
-        /* Слой статического шума/помех *cite: */
         body::before {
             content: "";
             position: fixed;
@@ -44,21 +50,18 @@
             z-index: -1;
             background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4uKfAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAARElEQVQ4y2NgwAJ8vAwwYAYZ2wB0vG958wAY5+NlgAEzyNjGBw45558HwjgfLwMsYAYZ23gQYMBw8QYBBgwXbyBgwAA3HwK5x1h+LAAAAABJRU5ErkJggg==');
             background-repeat: repeat;
-            opacity: 0.03; /* Едва заметный цифровой шум *cite: */
+            opacity: 0.03;
             pointer-events: none;
             animation: staticNoise 0.1s infinite;
         }
 
-        /* Анимация искажения (rapid RGB split and displacement) */
         @keyframes glitchEffekt {
             0% { clip-path: inset(80% 0 10% 0); transform: translate(-5px, 0px); }
             5% { clip-path: inset(10% 0 70% 0); transform: translate(5px, -5px); }
             10% { clip-path: inset(50% 0 10% 0); transform: translate(-3px, 2px); }
             15% { clip-path: inset(0% 0 100% 0); transform: translate(0px, 0px); }
-            /* Эффект мерцания помех *cite: */
             20% { clip-path: inset(50% 0 10% 0); transform: translate(2px, -3px); opacity: 0.5; }
             21% { clip-path: inset(50% 0 10% 0); transform: translate(2px, -3px); opacity: 1; }
-            /* ... больше случайных clip-path для хаотичного глитча ... */
             100% { clip-path: inset(80% 0 10% 0); transform: translate(-5px, 0px); }
         }
 
@@ -78,14 +81,13 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            overflow-y: auto; /* Контент скроллится ВНУТРИ контейнера, край страницы чист *cite: */
         }
 
-        /* --- Шапка *cite: --- */
+        /* --- Шапка --- */
         header {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Лого слева, глитч-эффекты справа */
+            justify-content: space-between;
             padding: 20px 0;
             position: relative;
         }
@@ -96,16 +98,14 @@
             text-decoration: none;
             color: white;
         }
-        /* УБРАЛИ ДРОЖЬ, ДОБАВИЛИ ГЛИТЧ НА ЛОГО */
         .logo img {
             height: 40px;
             position: relative;
-            animation: glitchEffekt 4s infinite linear alternate-reverse; /* Случайные вспышки глитча *cite: */
+            animation: glitchEffekt 4s infinite linear alternate-reverse;
         }
-        /* Исправление шрифтов в шапке *cite: */
         .logo-text h2 {
             margin: 0;
-            font-family: 'Montserrat', sans-serif; /* Montserrat для заголовков *cite: */
+            font-family: 'Montserrat', sans-serif;
             font-size: 1.2rem;
             text-transform: uppercase;
             font-weight: 700;
@@ -117,19 +117,19 @@
             font-family: 'Roboto', sans-serif;
         }
 
-        /* --- Главный экран *cite: --- */
-        /* Отделяем основной блок инфы четкой подложкой, как на image_2.png */
+        /* --- Главный экран --- */
         .main-content-panel {
-            background: var(--panel-bg); /* Темная подложка *cite: */
+            background: var(--panel-bg);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(78, 255, 161, 0.1); /* Свечение */
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(78, 255, 161, 0.1);
             margin: 40px 0;
             position: relative;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        /* Хаотичные помехи-линии поверх панели */
         .main-content-panel::after {
             content: "";
             position: absolute;
@@ -152,12 +152,11 @@
             align-items: center;
             gap: 40px;
             position: relative;
-            z-index: 2; /* Поверх помех панели */
+            z-index: 2;
         }
         .hero-content {
             flex: 1;
         }
-        /* Глитч-эффект на основном заголовке *cite: */
         .hero-title {
             font-family: 'Montserrat', sans-serif;
             font-size: 3.5rem;
@@ -170,27 +169,17 @@
             position: relative;
             display: inline-block;
         }
-        /* Слой глитч-копии для искажения */
-        .hero-title::before, .hero-title::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0.8;
-            pointer-events: none;
-        }
         .hero-title span {
             color: var(--neon-purple);
             text-shadow: 0 0 10px var(--neon-purple), 0 0 20px rgba(181, 60, 255, 0.5);
         }
-        /* Исправление выравнивания subtext *cite: */
         .hero-desc {
             font-family: 'Roboto', sans-serif;
             font-size: 1.2rem;
             line-height: 1.5;
             margin-bottom: 40px;
             color: #ccc;
-            text-align: left; /* Четкое левое выравнивание *cite: */
+            text-align: left;
         }
         .main-btn {
             background: rgba(78, 255, 161, 0.05);
@@ -199,7 +188,7 @@
             padding: 15px 40px;
             font-size: 1.2rem;
             font-weight: 700;
-            font-family: 'Montserrat', sans-serif; /* Montserrat для кнопок *cite: */
+            font-family: 'Montserrat', sans-serif;
             border-radius: 30px;
             cursor: pointer;
             box-shadow: 0 0 15px rgba(78, 255, 161, 0.4), inset 0 0 15px rgba(78, 255, 161, 0.1);
@@ -231,12 +220,12 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            margin-bottom: 60px;
+            margin-bottom: 20px;
             position: relative;
-            z-index: 2; /* Поверх помех панели */
+            z-index: 2;
         }
         .module-card {
-            background: rgba(255, 255, 255, 0.01); /* Очень тонкое стекло для карточек внутри */
+            background: rgba(255, 255, 255, 0.01);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 20px;
@@ -256,7 +245,7 @@
             margin-bottom: 5px;
         }
         .module-title {
-            font-family: 'Montserrat', sans-serif; /* Montserrat для заголовков модулей *cite: */
+            font-family: 'Montserrat', sans-serif;
             font-size: 1.1rem;
             font-weight: 700;
             margin: 0 0 10px 0;
@@ -296,13 +285,13 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* --- Подвал *cite: --- */
+        /* --- Подвал --- */
         footer {
             margin-top: auto;
             padding: 30px 0;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            z-index: 1; /* Обычный слой */
+            z-index: 1;
         }
         .footer-content {
             display: flex;
@@ -324,7 +313,7 @@
             color: var(--neon-green);
         }
         .timer {
-            font-family: 'Montserrat', sans-serif; /* Montserrat для таймера *cite: */
+            font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             color: #fff;
         }
@@ -352,7 +341,7 @@
             border-color: var(--neon-purple);
         }
 
-        /* Адаптивность *cite: */
+        /* Адаптивность */
         @media (max-width: 992px) {
             .hero { flex-direction: column; text-align: center; }
             .hero-content { text-align: center; }
@@ -372,7 +361,7 @@
 
 <div class="container">
     <header>
-        <a href="#" class="logo">
+        <div class="logo">
             <img src="https://raw.githubusercontent.com/nikashum93/web/main/logo.png" alt="Логотип">
             <div class="logo-text">
                 <h2>УРОК-Блокбастер</h2>
