@@ -18,8 +18,9 @@
         body {
             margin: 0;
             padding: 0;
+            /* Основной темный цвет фона *cite: */
             background-color: var(--bg-dark);
-            /* Фон (без прозрачности) - JPG */
+            /* Фон ковра (без изменений в ссылке) *cite: */
             background-image: url('https://raw.githubusercontent.com/NikaShum93/web/main/bg.jpg');
             background-size: cover;
             background-position: center;
@@ -29,6 +30,70 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Убираем скролл полностью *cite: */
+            position: relative;
+        }
+
+        /* Требование 1 и 2: Темная подложка, затемняющая ковер */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* Используем существующий темный цвет для сильного затемнения ковра *cite: */
+            background-color: var(--bg-dark);
+            opacity: 0.9; /* Сильно затемняем ковер */
+            z-index: -2; /* Уходим за контент */
+        }
+
+        /* Требование 3: Эффект матрицы-глитча с искажением */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1; /* Поверх затемненного ковра, но под контентом */
+            pointer-events: none;
+
+            /* Создаем текстуру цифровых линий матрицы */
+            background-image:
+                repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.08), rgba(0, 255, 0, 0.08) 1px, transparent 1px, transparent 2px), /* Гориз линии */
+                repeating-linear-gradient(90deg, rgba(0, 255, 0, 0.04), rgba(0, 255, 0, 0.04) 1px, transparent 1px, transparent 2px); /* Вертикальные */
+            background-size: 100% 4px, 4px 100%;
+
+            /* Анимация глитч-эффекта и искажений */
+            animation: glitchEffect 0.2s steps(2, end) infinite, matrixBlink 5s linear infinite;
+            mix-blend-mode: color-dodge; /* Делает зеленые элементы более неоновыми */
+        }
+
+        /* Анимация искажения глитча (skew) */
+        @keyframes glitchEffect {
+            0%, 100% {
+                transform: skewX(0deg) scaleY(1);
+                filter: contrast(110%) brightness(100%);
+            }
+            20% {
+                transform: skewX(2deg) scaleY(1.02);
+                background-position: 5px 0;
+                filter: contrast(130%) brightness(110%);
+            }
+            40% {
+                transform: skewX(-1.5deg) scaleY(0.98);
+                background-position: -5px 0;
+            }
+            60% {
+                background-position: 0 5px;
+                filter: contrast(110%) brightness(120%);
+            }
+            80% {
+                transform: skewX(1.1deg);
+                background-position: 0 -5px;
+                filter: contrast(100%) brightness(100%);
+            }
+        }
+
+        /* Дополнительное медленное мерцание матрицы */
+        @keyframes matrixBlink {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.8; }
         }
 
         .container {
@@ -37,6 +102,8 @@
             padding: 20px;
             width: 100%;
             box-sizing: border-box;
+            position: relative; /* Чтобы контент был поверх псевдоэлементов body */
+            z-index: 1;
         }
 
         /* --- Шапка --- */
@@ -65,7 +132,7 @@
             color: #aaa;
         }
 
-        /* --- Главный экран --- */
+        /* --- Главный экран *cite: --- */
         .hero {
             display: flex;
             justify-content: space-between;
@@ -190,7 +257,7 @@
             object-fit: cover;
         }
 
-        /* --- Подвал --- */
+        /* --- Подвал *cite: --- */
         footer {
             margin-top: auto;
             padding: 30px 0;
@@ -239,7 +306,7 @@
             box-shadow: 0 0 15px var(--neon-purple);
         }
 
-        /* Адаптивность для экранов поменьше */
+        /* Адаптивность для экранов поменьше *cite: */
         @media (max-width: 992px) {
             .hero { flex-direction: column; }
             .hero-image { text-align: center; }
@@ -261,7 +328,7 @@
             <img src="https://raw.githubusercontent.com/nikashum93/web/main/logo.png" alt="Логотип">
             <div class="logo-text">
                 <h2>УРОК-Блокбастер</h2>
-                <p>Режиссура образовательных квестов</p>
+                <p>Режиссура образовательных квестов *cite:</p>
             </div>
         </div>
     </header>
@@ -269,9 +336,9 @@
     <main>
         <div class="hero">
             <div class="hero-content">
-                <h1 class="hero-title">ПРЕВРАТИ УРОК<br>В <span>БЛОКБАСТЕР</span></h1>
-                <p class="hero-desc">Создавай образовательные квесты, 18 игровых механик, авторские расширения и AI-интерактив для любого предмета.</p>
-                <button class="main-btn">Войти в студию</button>
+                <h1 class="hero-title">ПРЕВРАТИ УРОК<br>В <span>БЛОКБАСТЕР *cite:</span></h1>
+                <p class="hero-desc">Создавай образовательные квесты, 18 игровых механик, авторские расширения и AI-интерактив для любого предмета. *cite:</p>
+                <button class="main-btn">Войти в студию *cite:</button>
             </div>
             <div class="hero-image">
                 <img src="https://raw.githubusercontent.com/nikashum93/web/main/hero-img.png" alt="Схема платформы">
@@ -280,34 +347,34 @@
 
         <div class="modules">
             <div class="module-card">
-                <div class="module-subtitle">Модуль 1</div>
-                <h3 class="module-title">Сценарий<br>игры</h3>
-                <p class="module-desc">18 игровых механик:<br>от головоломок до<br>расследований</p>
-                <button class="module-btn">Подробнее о модуле</button>
+                <div class="module-subtitle">Модуль 1 *cite:</div>
+                <h3 class="module-title">Сценарий<br>игры *cite:</h3>
+                <p class="module-desc">18 игровых механик:<br>от головоломок до<br>расследований *cite:</p>
+                <button class="module-btn">Подробнее о модуле *cite:</button>
                 <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod1.png" class="module-icon" alt="Сценарий">
             </div>
 
             <div class="module-card">
-                <div class="module-subtitle">Модуль 2</div>
-                <h3 class="module-title">Режиссура<br>и визуал</h3>
-                <p class="module-desc">Создание атмосферы<br>и визуальных<br>эффектов</p>
-                <button class="module-btn">Подробнее о модуле</button>
+                <div class="module-subtitle">Модуль 2 *cite:</div>
+                <h3 class="module-title">Режиссура<br>и визуал *cite:</h3>
+                <p class="module-desc">Создание атмосферы<br>и визуальных<br>эффектов *cite:</p>
+                <button class="module-btn">Подробнее о модуле *cite:</button>
                 <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod2.png" class="module-icon" alt="Визуал">
             </div>
 
             <div class="module-card">
-                <div class="module-subtitle">Модуль 3</div>
-                <h3 class="module-title">AI-<br>интерактив</h3>
-                <p class="module-desc">Интеграция нейросетей<br>в обучение</p>
-                <button class="module-btn">Подробнее о модуле</button>
+                <div class="module-subtitle">Модуль 3 *cite:</div>
+                <h3 class="module-title">AI-<br>интерактив *cite:</h3>
+                <p class="module-desc">Интеграция нейросетей<br>в обучение *cite:</p>
+                <button class="module-btn">Подробнее о модуле *cite:</button>
                 <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod3.png" class="module-icon" alt="Нейросети">
             </div>
 
             <div class="module-card">
-                <div class="module-subtitle">Модуль 4</div>
-                <h3 class="module-title">Игровая<br>платформа</h3>
-                <p class="module-desc">Авторские расширения<br>для любой среды</p>
-                <button class="module-btn">Подробнее о модуле</button>
+                <div class="module-subtitle">Модуль 4 *cite:</div>
+                <h3 class="module-title">Игровая<br>платформа *cite:</h3>
+                <p class="module-desc">Авторские расширения<br>для любой среды *cite:</p>
+                <button class="module-btn">Подробнее о модуле *cite:</button>
                 <img src="https://raw.githubusercontent.com/nikashum93/web/main/mod4.png" class="module-icon" alt="Платформа">
             </div>
         </div>
@@ -325,7 +392,7 @@
             </div>
             
             <div class="timer">
-                СТАРТ КУРСА ЧЕРЕЗ: <span>04 ДНЯ : 18 ЧАСОВ : 32 МИНУТЫ</span>
+                СТАРТ КУРСА ЧЕРЕЗ: <span>04 ДНЯ : 18 ЧАСОВ : 32 МИНУТЫ *cite:</span>
             </div>
 
             <div class="socials">
