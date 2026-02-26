@@ -15,358 +15,205 @@
             --glass-border: rgba(78, 255, 161, 0.5);
         }
 
-        /* Хитро прячем сам ползунок скролла справа, но оставляем возможность крутить страницу */
-        ::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
-        }
-        html {
-            scrollbar-width: none; /* Для Firefox */
-        }
+        /* Прячем ползунок скролла */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        html { scrollbar-width: none; }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: var(--bg-dark);
+            /* Сильное затемнение + ковер на фоне */
             background-image:
                 linear-gradient(rgba(7, 10, 15, 0.92), rgba(7, 10, 15, 0.92)),
                 url('https://raw.githubusercontent.com/NikaShum93/web/main/bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #ffffff;
-            font-family: 'Roboto', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden; /* Запрещаем только горизонтальный скролл */
-            position: relative;
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: #ffffff; font-family: 'Roboto', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column;
+            overflow-x: hidden; position: relative;
         }
 
+        /* Настоящий Глитч матрицы ПОВЕРХ ковра */
         body::before {
             content: "";
             position: fixed;
-            top: -100px; left: -100px; right: -100px; bottom: -100px;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: repeating-linear-gradient(0deg, rgba(78,255,161, 0.15), rgba(78,255,161, 0.15) 2px, transparent 2px, transparent 8px);
+            background-size: 100% 100%;
             z-index: -1;
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4uKfAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAARElEQVQ4y2NgwAJ8vAwwYAYZ2wB0vG958wAY5+NlgAEzyNjGBw45558HwjgfLwMsYAYZ23gQYMBw8QYBBgwXbyBgwAA3HwK5x1h+LAAAAABJRU5ErkJggg==');
-            background-repeat: repeat;
-            opacity: 0.03;
             pointer-events: none;
-            animation: staticNoise 0.1s infinite;
+            animation: matrixGlitch 3s infinite linear;
+            mix-blend-mode: color-dodge;
         }
 
-        @keyframes glitchEffekt {
-            0% { clip-path: inset(80% 0 10% 0); transform: translate(-5px, 0px); }
-            5% { clip-path: inset(10% 0 70% 0); transform: translate(5px, -5px); }
-            10% { clip-path: inset(50% 0 10% 0); transform: translate(-3px, 2px); }
-            15% { clip-path: inset(0% 0 100% 0); transform: translate(0px, 0px); }
-            20% { clip-path: inset(50% 0 10% 0); transform: translate(2px, -3px); opacity: 0.5; }
-            21% { clip-path: inset(50% 0 10% 0); transform: translate(2px, -3px); opacity: 1; }
-            100% { clip-path: inset(80% 0 10% 0); transform: translate(-5px, 0px); }
-        }
-
-        @keyframes staticNoise {
-            0% { transform: translate(0,0); }
-            100% { transform: translate(10px,10px); }
+        @keyframes matrixGlitch {
+            0%, 100% { clip-path: inset(0 0 0 0); opacity: 0.2; transform: translateY(0); }
+            10% { clip-path: inset(10% 0 80% 0); opacity: 0.8; transform: translateY(5px); }
+            20% { clip-path: inset(50% 0 30% 0); opacity: 0.4; transform: translateY(-5px); }
+            30% { clip-path: inset(80% 0 10% 0); opacity: 0.9; transform: translateY(2px); }
+            40% { clip-path: inset(0 0 0 0); opacity: 0.2; transform: translateY(0); }
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            width: 100%;
-            box-sizing: border-box;
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
+            max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; box-sizing: border-box;
+            position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1;
         }
 
-        /* --- Шапка --- */
+        /* --- Обновленная Шапка (всё перенесено наверх) --- */
         header {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 0;
-            position: relative;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-            color: white;
-        }
-        .logo img {
-            height: 40px;
-            position: relative;
-            animation: glitchEffekt 4s infinite linear alternate-reverse;
-        }
-        .logo-text h2 {
-            margin: 0;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-        .logo-text p {
-            margin: 0;
-            font-size: 0.8rem;
-            color: #aaa;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        /* --- Главный экран --- */
-        .main-content-panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(78, 255, 161, 0.1);
-            margin: 40px 0;
-            position: relative;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .main-content-panel::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: repeating-linear-gradient(0deg, rgba(78, 255, 161, 0.05), rgba(78, 255, 161, 0.05) 1px, transparent 1px, transparent 15px);
-            background-size: 100% 150px;
-            opacity: 0.2;
-            pointer-events: none;
-            animation: matrixLines 1s linear infinite;
-        }
-
-        @keyframes matrixLines {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 -150px; }
-        }
-
-        .hero {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 40px;
-            position: relative;
-            z-index: 2;
-        }
-        .hero-content {
-            flex: 1;
-        }
-        .hero-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 900;
-            line-height: 1.1;
-            margin: 0 0 20px 0;
-            text-transform: uppercase;
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-green), 0 0 20px rgba(78, 255, 161, 0.5);
-            position: relative;
-            display: inline-block;
-        }
-        .hero-title span {
-            color: var(--neon-purple);
-            text-shadow: 0 0 10px var(--neon-purple), 0 0 20px rgba(181, 60, 255, 0.5);
-        }
-        .hero-desc {
-            font-family: 'Roboto', sans-serif;
-            font-size: 1.2rem;
-            line-height: 1.5;
-            margin-bottom: 40px;
-            color: #ccc;
-            text-align: left;
-        }
-        .main-btn {
-            background: rgba(78, 255, 161, 0.05);
-            border: 2px solid var(--neon-green);
-            color: #fff;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            font-family: 'Montserrat', sans-serif;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(78, 255, 161, 0.4), inset 0 0 15px rgba(78, 255, 161, 0.1);
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            text-shadow: 0 0 5px white;
-            position: relative;
-        }
-        .main-btn:hover {
-            background: var(--neon-green);
-            color: #000;
-            box-shadow: 0 0 30px var(--neon-green);
-            text-shadow: none;
-        }
-        .hero-image {
-            flex: 1;
-            text-align: right;
-            position: relative;
-        }
-        .hero-image img {
-            max-width: 100%;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 0 30px rgba(78, 255, 161, 0.2);
-        }
-
-        /* --- Модули --- */
-        .modules {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            flex-direction: column;
             gap: 20px;
+            padding: 20px 0;
             margin-bottom: 20px;
-            position: relative;
-            z-index: 2;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 30px;
         }
-        .module-card {
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 20px;
-            position: relative;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .module-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 20px rgba(181, 60, 255, 0.2);
-        }
-        .module-subtitle {
-            font-family: 'Roboto', sans-serif;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: #aaa;
-            margin-bottom: 5px;
-        }
-        .module-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 0 0 10px 0;
-            text-transform: uppercase;
-        }
-        .module-desc {
-            font-family: 'Roboto', sans-serif;
-            font-size: 0.8rem;
-            color: #bbb;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-        .module-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ccc;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            transition: all 0.3s;
-        }
-        .module-card:hover .module-btn {
-            border-color: var(--neon-purple);
-            color: #fff;
-            background: rgba(181, 60, 255, 0.1);
-        }
-        .module-icon {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        /* --- Подвал --- */
-        footer {
-            margin-top: auto;
-            padding: 30px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            z-index: 1;
-        }
-        .footer-content {
+        
+        .top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
         }
-        .nav-links a {
-            color: #aaa;
-            text-decoration: none;
-            margin-right: 20px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            font-family: 'Montserrat', sans-serif;
-            transition: color 0.3s;
+
+        .logo-block { display: flex; align-items: center; gap: 15px; }
+        .logo-text h2 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 1.2rem; text-transform: uppercase; font-weight: 700; }
+        .logo-text p { margin: 0; font-size: 0.8rem; color: #aaa; font-family: 'Roboto', sans-serif; }
+
+        /* Нарисованный кодом Логотип (Хлопушка + Шляпа) */
+        .neon-logo {
+            height: 45px;
+            width: 55px;
+            filter: drop-shadow(0 0 3px var(--neon-purple));
+            animation: neon-pulse 3s infinite alternate;
         }
-        .nav-links a:hover {
-            color: var(--neon-green);
+        .green-tube { stroke: var(--neon-green); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .purple-tube { stroke: var(--neon-purple); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .play-btn { fill: var(--neon-purple); }
+        
+        @keyframes neon-pulse {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; filter: drop-shadow(0 0 5px var(--neon-purple)); }
+            20%, 24%, 55% { opacity: 0.3; filter: none; }
         }
-        .timer {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            color: #fff;
+
+        /* Таймер и соцсети в шапке */
+        .timer { font-family: 'Montserrat', sans-serif; font-weight: 700; color: #fff; text-align: right; }
+        .timer span { color: var(--neon-green); font-size: 1.2rem; margin-left: 10px; font-weight: 900; }
+        .socials { display: flex; gap: 15px; }
+        .socials img { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
+        .socials img:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--neon-purple); border-color: var(--neon-purple); }
+
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { color: #aaa; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--neon-green); }
+
+        /* --- Главный экран с блестящей рамкой --- */
+        .main-content-panel {
+            /* Бегущий блеск по рамке */
+            background:
+                linear-gradient(var(--panel-bg), var(--panel-bg)) padding-box,
+                linear-gradient(60deg, rgba(78, 255, 161, 0.1), var(--neon-green), var(--neon-purple), rgba(78, 255, 161, 0.1)) border-box;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 40px;
+            background-size: 100% 100%, 300% 300%;
+            animation: borderShine 4s linear infinite;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
         }
-        .timer span {
-            color: var(--neon-green);
-            font-size: 1.2rem;
-            margin-left: 10px;
-            font-weight: 900;
+
+        @keyframes borderShine {
+            0% { background-position: 0% 0%, 0% 50%; }
+            50% { background-position: 0% 0%, 100% 50%; }
+            100% { background-position: 0% 0%, 0% 50%; }
         }
-        .socials {
-            display: flex;
-            gap: 15px;
+
+        .hero { display: flex; justify-content: space-between; align-items: center; gap: 40px; position: relative; }
+        .hero-content { flex: 1; margin-bottom: 60px; /* Воздух под кнопкой */ }
+        
+        .hero-title {
+            font-family: 'Montserrat', sans-serif; font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 900; line-height: 1.1; margin: 0 0 20px 0;
+            text-transform: uppercase; color: #fff; text-shadow: 0 0 10px var(--neon-green), 0 0 20px rgba(78, 255, 161, 0.5);
+            white-space: nowrap; /* Жестко держим в 2 строки */
         }
-        .socials img {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s;
+        .hero-title span { color: var(--neon-purple); text-shadow: 0 0 10px var(--neon-purple), 0 0 20px rgba(181, 60, 255, 0.5); }
+        .hero-desc { font-family: 'Roboto', sans-serif; font-size: 1.2rem; line-height: 1.5; margin-bottom: 40px; color: #ccc; text-align: left; }
+        
+        .main-btn {
+            background: rgba(78, 255, 161, 0.05); border: 2px solid var(--neon-green); color: #fff;
+            padding: 15px 40px; font-size: 1.2rem; font-weight: 700; font-family: 'Montserrat', sans-serif;
+            border-radius: 30px; cursor: pointer; box-shadow: 0 0 15px rgba(78, 255, 161, 0.4), inset 0 0 15px rgba(78, 255, 161, 0.1);
+            transition: all 0.3s ease; text-transform: uppercase; text-shadow: 0 0 5px white; position: relative;
         }
-        .socials img:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px var(--neon-purple);
-            border-color: var(--neon-purple);
-        }
+        .main-btn:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 30px var(--neon-green); text-shadow: none; }
+        
+        .hero-image { flex: 1; text-align: right; position: relative; }
+        .hero-image img { max-width: 100%; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 0 30px rgba(78, 255, 161, 0.2); }
+
+        /* --- Модули --- */
+        .modules { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; position: relative; }
+        .module-card { background: rgba(255, 255, 255, 0.01); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .module-card:hover { transform: translateY(-5px); border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(181, 60, 255, 0.2); }
+        .module-subtitle { font-family: 'Roboto', sans-serif; font-size: 0.7rem; text-transform: uppercase; color: #aaa; margin-bottom: 5px; }
+        .module-title { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; margin: 0 0 10px 0; text-transform: uppercase; }
+        .module-desc { font-family: 'Roboto', sans-serif; font-size: 0.8rem; color: #bbb; margin-bottom: 20px; line-height: 1.4; }
+        .module-btn { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; padding: 8px 15px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: all 0.3s; }
+        .module-card:hover .module-btn { border-color: var(--neon-purple); color: #fff; background: rgba(181, 60, 255, 0.1); }
+        .module-icon { position: absolute; bottom: 15px; right: 15px; width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(255,255,255,0.05); }
 
         /* Адаптивность */
         @media (max-width: 992px) {
+            .top-row { flex-direction: column; text-align: center; justify-content: center; }
+            .timer { text-align: center; }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
             .hero { flex-direction: column; text-align: center; }
-            .hero-content { text-align: center; }
+            .hero-content { text-align: center; margin-bottom: 40px; }
             .hero-desc { text-align: center; }
             .hero-image { text-align: center; }
             .modules { grid-template-columns: repeat(2, 1fr); }
-            .footer-content { flex-direction: column; text-align: center; }
-            .nav-links { margin-bottom: 15px; display: flex; flex-wrap: wrap; justify-content: center; }
+            .hero-title { white-space: normal; } /* Разрешаем перенос на мобилках */
         }
-        @media (max-width: 600px) {
-            .modules { grid-template-columns: 1fr; }
-            .hero-title { font-size: 2.5rem; }
-        }
+        @media (max-width: 600px) { .modules { grid-template-columns: 1fr; } .hero-title { font-size: 2rem; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <div class="logo">
-            <img src="https://raw.githubusercontent.com/nikashum93/web/main/logo.png" alt="Логотип">
-            <div class="logo-text">
-                <h2>УРОК-Блокбастер</h2>
-                <p>Режиссура образовательных квестов</p>
+        <div class="top-row">
+            <div class="logo-block">
+                <svg class="neon-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path class="green-tube" d="M10,30 L90,30 L90,40 L10,40 Z M25,30 L35,20 M50,30 L60,20 M75,30 L85,20" />
+                    <path class="purple-tube" d="M10,40 L90,40 L90,85 L10,85 Z" />
+                    <polygon class="play-btn" points="35,50 55,62.5 35,75" />
+                    <path class="purple-tube grad-cap" d="M65,70 L80,65 L95,70 L80,75 Z M80,75 L80,87 M68,72 L68,81"/>
+                </svg>
+                <div class="logo-text">
+                    <h2>УРОК-Блокбастер</h2>
+                    <p>Режиссура образовательных квестов</p>
+                </div>
             </div>
+            
+            <div class="timer">
+                СТАРТ КУРСА ЧЕРЕЗ:<br><span>04 ДНЯ : 18 ЧАСОВ : 32 МИНУТЫ</span>
+            </div>
+
+            <div class="socials">
+                <img src="https://raw.githubusercontent.com/nikashum93/web/main/tg.png" alt="Telegram">
+                <img src="https://raw.githubusercontent.com/nikashum93/web/main/vk.png" alt="VK">
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="#">Программа</a>
+            <a href="#">Кейсы</a>
+            <a href="#">О нас</a>
+            <a href="#">Отзывы</a>
+            <a href="#">Блог</a>
+            <a href="#">Контакты</a>
         </div>
     </header>
 
@@ -418,29 +265,6 @@
             </div>
         </main>
     </div>
-
-    <footer>
-        <div class="footer-content">
-            <div class="nav-links">
-                <a href="#">Программа</a>
-                <a href="#">Кейсы</a>
-                <a href="#">О нас</a>
-                <a href="#">Отзывы</a>
-                <a href="#">Блог</a>
-                <a href="#">Контакты</a>
-            </div>
-            
-            <div class="timer">
-                СТАРТ КУРСА ЧЕРЕЗ: <span>04 ДНЯ : 18 ЧАСОВ : 32 МИНУТЫ</span>
-            </div>
-
-            <div class="socials">
-                <img src="https://raw.githubusercontent.com/nikashum93/web/main/tg.png" alt="Telegram">
-                <img src="https://raw.githubusercontent.com/nikashum93/web/main/vk.png" alt="VK">
-                <img src="https://raw.githubusercontent.com/nikashum93/web/main/yt.png" alt="YouTube">
-            </div>
-        </div>
-    </footer>
 </div>
 
 </body>
